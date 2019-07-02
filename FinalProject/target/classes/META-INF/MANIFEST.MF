@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: finalproject
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: Phat Tai
+Implementation-Vendor-Id: com.phattai
+Build-Jdk: 1.8.0_211
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/finalproject
+Created-By: Maven Integration for Eclipse
+
