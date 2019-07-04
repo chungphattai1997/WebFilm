@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.phattai.finalproject.model.Category;
 import com.phattai.finalproject.service.CategoryService;
 
-
 @RestController
 @RequestMapping("/category")
 public class CategoryController {

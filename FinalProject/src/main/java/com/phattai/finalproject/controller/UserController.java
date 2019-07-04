@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import com.phattai.finalproject.service.UserService;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+	
 	@Autowired
 	UserService userService;
 	
@@ -32,6 +34,7 @@ public class UserController {
 
 	// GET all user
 	@GetMapping("/getall")
+	@PreAuthorize("hasRole('ADMIN')")
 	public List<UserDTO> getAll() {
 		List<User> listUser = (List<User>) userService.findAll();
 		List<UserDTO> listUserDTO = new ArrayList<UserDTO>();
@@ -72,6 +75,10 @@ public class UserController {
 		if (userService.findById(user.getUsername()) == null) {
 			return "Username not found";
 		}
+		String pwd = user.getPassword();
+		String encryptPwd = passwordEncoder.encode(pwd);
+		user.setPassword(encryptPwd);
+		
 		userService.save(user);
 		return "Updated " + user.getUsername();
 	}
@@ -94,7 +101,7 @@ public class UserController {
 		if (user == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
-			if (!user.getPassword().equals(password)) {
+			if (!passwordEncoder.matches(password, user.getPassword())) {
 				return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 			}
 			UserDTO userDTO = getByUsername(username);

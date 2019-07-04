@@ -21,16 +21,12 @@ import com.phattai.finalproject.filter.JWTLoginFilter;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
 	@Autowired
 	private DataSource dataSource;
 
 	@Autowired
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -44,10 +40,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.inMemoryAuthentication().withUser("admin").password("password").roles("ADMIN");
+
+		String pwd = passwordEncoder().encode("admin");
+
+		auth.inMemoryAuthentication().withUser("admin").password(pwd).roles("ADMIN");
 		auth.jdbcAuthentication().dataSource(dataSource)
 				.usersByUsernameQuery("select username, password, enabled from user where username=?")
 				.authoritiesByUsernameQuery("select username, role from user where username=?")
 				.passwordEncoder(new BCryptPasswordEncoder());
+	}
+
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 }
